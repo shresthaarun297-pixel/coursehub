@@ -6,52 +6,63 @@ include 'config/database.php';
 <html>
 <head>
     <title>Search Programmes</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<h1>Search Programmes</h1>
+<nav>
+    <a href="index.php">Home</a>
+    <a href="programmes.php">Programmes</a>
+    <a href="search.php">Search</a>
+</nav>
 
-<form method="GET" action="">
-    <input type="text" name="keyword" placeholder="Enter programme name">
+<div class="container">
+    <h1>Search Programmes</h1>
 
-    <select name="level">
-        <option value="">All Levels</option>
-        <option value="Undergraduate">Undergraduate</option>
-        <option value="Postgraduate">Postgraduate</option>
-    </select>
+    <form method="GET" action="">
+        <input type="text" name="keyword" placeholder="Enter programme name">
 
-    <button type="submit">Search</button>
-</form>
+        <select name="level">
+            <option value="">All Levels</option>
+            <option value="Undergraduate">Undergraduate</option>
+            <option value="Postgraduate">Postgraduate</option>
+        </select>
 
-<?php
-if (isset($_GET['keyword']) || isset($_GET['level'])) {
-    $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
-    $level = isset($_GET['level']) ? $_GET['level'] : '';
+        <button type="submit">Search</button>
+    </form>
 
-    $sql = "SELECT * FROM programmes WHERE published = 1";
+    <?php
+    if (isset($_GET['keyword']) || isset($_GET['level'])) {
+        $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+        $level = isset($_GET['level']) ? $_GET['level'] : '';
 
-    if (!empty($keyword)) {
-        $sql .= " AND name LIKE '%$keyword%'";
-    }
+        $sql = "SELECT * FROM programmes WHERE published = 1";
 
-    if (!empty($level)) {
-        $sql .= " AND level = '$level'";
-    }
-
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            echo "<h3>".$row['name']."</h3>";
-            echo "<p>".$row['description']."</p>";
-            echo "<p><strong>Level:</strong> ".$row['level']."</p>";
-            echo "<a href='programme-details.php?id=".$row['id']."'>View Details</a><br><br>";
+        if (!empty($keyword)) {
+            $sql .= " AND name LIKE '%$keyword%'";
         }
-    } else {
-        echo "<p>No programmes found.</p>";
+
+        if (!empty($level)) {
+            $sql .= " AND level = '$level'";
+        }
+
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                echo "<div class='card'>";
+                echo "<h3>".$row['name']."</h3>";
+                echo "<p>".$row['description']."</p>";
+                echo "<p><strong>Level:</strong> ".$row['level']."</p>";
+                echo "<a class='btn' href='programme-details.php?id=".$row['id']."'>View Details</a>";
+                echo "</div>";
+            }
+        } else {
+            echo "<p>No programmes found.</p>";
+        }
     }
-}
-?>
+    ?>
+</div>
 
 </body>
 </html>
